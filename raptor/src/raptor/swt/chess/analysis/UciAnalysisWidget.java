@@ -115,8 +115,20 @@ public class UciAnalysisWidget implements EngineAnalysisWidget {
 								if (info instanceof ScoreInfo) {
 									ScoreInfo scoreInfo = (ScoreInfo) info;
 									if (((ScoreInfo) info).getMateInMoves() != 0) {
-										score = local.getString("uciAnalW_0") 
-												+ scoreInfo.getMateInMoves();
+										int mateInMoves = controller
+												.getGame().isWhitesMove()
+												|| !currentEngine
+														.isMultiplyBlackScoreByMinus1() ? scoreInfo
+												.getMateInMoves()
+												: -scoreInfo
+														.getMateInMoves();
+										if (mateInMoves > 0) {
+											score = local.getString("uciAnalW_0") 
+												+ mateInMoves;
+										} else {
+											score = "-" + local.getString("uciAnalW_0") 
+												+ Math.abs(mateInMoves);
+										}
 									} else {
 										double scoreAsDouble = controller
 												.getGame().isWhitesMove()
@@ -125,19 +137,16 @@ public class UciAnalysisWidget implements EngineAnalysisWidget {
 												.getValueInCentipawns() / 100.0
 												: -scoreInfo
 														.getValueInCentipawns() / 100.0;
-
 										score = new BigDecimal(scoreAsDouble)
                                                 .setScale(
                                                         2,
                                                         BigDecimal.ROUND_HALF_UP)
                                                 .toString();
-										
-										if (scoreInfo.isLowerBoundScore()) {
-											score += "++";
-										} else if (scoreInfo.isUpperBoundScore()) {
-											score += "--";
-										}
-										
+									}
+									if (scoreInfo.isLowerBoundScore()) {
+										score += "++";
+									} else if (scoreInfo.isUpperBoundScore()) {
+										score += "--";
 									}
 								} else if (info instanceof DepthInfo) {
 									DepthInfo depthInfo = (DepthInfo) info;
@@ -205,9 +214,9 @@ public class UciAnalysisWidget implements EngineAnalysisWidget {
 											String moveNumber = isFirstMove
 													&& !gameMove.isWhitesMove() ? gameMove
 													.getFullMoveCount()
-													+ ") ... " : gameMove 
+													+ "... " : gameMove 
 													.isWhitesMove() ? gameMove
-													.getFullMoveCount() + ") " 
+													.getFullMoveCount() + ". " 
 													: "";
                                             line.append(StringUtils.isBlank(line.toString()) ? ""  //$NON-NLS-2$
                                                     : " ").append(moveNumber).append(san).append(gameClone.isInCheck() ? "+"
@@ -254,15 +263,15 @@ public class UciAnalysisWidget implements EngineAnalysisWidget {
 
 														for (int i = 0; i < finalPVs
 																.size(); i++) {
-															data[0][0] = StringUtils
+															data[i][0] = StringUtils
 																	.defaultString(finalScore);
-															data[0][1] = StringUtils
+															data[i][1] = StringUtils
 																	.defaultString(finalDepth);
-															data[0][2] = StringUtils
+															data[i][2] = StringUtils
 																	.defaultString(finalTime);
-															data[0][3] = StringUtils
+															data[i][3] = StringUtils
 																	.defaultString(finalNodes);
-															data[0][4] = StringUtils
+															data[i][4] = StringUtils
 																	.defaultString(finalPVs
 																			.get(i));
 														}
@@ -597,9 +606,12 @@ public class UciAnalysisWidget implements EngineAnalysisWidget {
 	}
 
 	protected void start(boolean override) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("In UciAnalysisWidget.start(" + override + ")");
+		}
 		if (currentEngine != null && (!isInStart || override)) {
 			isInStart = true;
-			ThreadService.getInstance().run(new Runnable() {
+			ThreadService.getInstance().run(new Runnable() { // Probably need to delay this when switching games
 				public void run() {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("In UciAnalysisWidget.start("  

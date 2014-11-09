@@ -19,7 +19,6 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
-import raptor.util.RaptorLogger;
  
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -43,6 +42,7 @@ import raptor.chess.pgn.PgnHeader;
 import raptor.chess.pgn.TimeTakenForMove;
 import raptor.chess.util.GameUtils;
 import raptor.connector.Connector;
+import raptor.international.L10n;
 import raptor.pref.PreferenceKeys;
 import raptor.service.SoundService;
 import raptor.swt.SWTUtils;
@@ -51,6 +51,7 @@ import raptor.swt.chess.ChessBoardController;
 import raptor.swt.chess.ChessBoardUtils;
 import raptor.swt.chess.MouseButtonAction;
 import raptor.swt.chess.movelist.TextAreaMoveList;
+import raptor.util.RaptorLogger;
 import raptor.util.RaptorStringTokenizer;
 import raptor.util.RaptorStringUtils;
 
@@ -150,15 +151,14 @@ public class InactiveController extends ChessBoardController implements
 				int moveNumber = getGame().getFullMoveCount();
 
 				board.getStatusLabel().setText(
-						"Last Move: "
+						L10n.getInstance().getString("chessBCont0")
 								+ moveNumber
-								+ ") "
-								+ (lastMove.isWhitesMove() ? "" : "... ")
+								+ (lastMove.isWhitesMove() ? ". " : "... ")
 								+ GameUtils.convertSanToUseUnicode(lastMove
 										.toString(), !getGame().isWhitesMove()));
 
 			} else {
-				board.getStatusLabel().setText("");
+				board.getStatusLabel().setText(L10n.getInstance().getString("chessBCont0"));
 			}
 		} else {
 			String result = getGame().getHeader(PgnHeader.ResultDescription);

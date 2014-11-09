@@ -184,17 +184,18 @@ public abstract class ChessBoardController implements BoardConstants,
 					board.getStatusLabel().setText(
 							L10n.getInstance().getString("chessBCont0")
 									+ moveNumber
-									+ ") " 
-									+ (lastMove.isWhitesMove() ? "" : "... ")  
+									+ (lastMove.isWhitesMove() ? ". " : "... ")  
 									+ GameUtils.convertSanToUseUnicode(lastMove
 											.toString(), lastMove
 											.isWhitesMove()));
 				} else {
-					board.getStatusLabel().setText(""); 
+					board.getStatusLabel().setText(
+							L10n.getInstance().getString("chessBCont0"));
 				}
 
 			} else {
-				board.getStatusLabel().setText(""); 
+				board.getStatusLabel().setText(
+						L10n.getInstance().getString("chessBCont0"));
 			}
 		} else {
 			String result = getGame().getHeader(PgnHeader.ResultDescription);
