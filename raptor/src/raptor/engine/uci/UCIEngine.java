@@ -894,8 +894,8 @@ public class UCIEngine {
 				infos.add(timeInfo);
 			} else if (type.equalsIgnoreCase("nodes")) {
 				NodesSearchedInfo nodesSearched = new NodesSearchedInfo();
-				nodesSearched.setNodesSearched(Integer
-						.parseInt(tok.nextToken()));
+				nodesSearched.setNodesSearched(Long
+						.parseLong(tok.nextToken()));
 				infos.add(nodesSearched);
 			} else if (type.equalsIgnoreCase("pv")) {
 				BestLineFoundInfo bestLineFoundInfo = new BestLineFoundInfo();
