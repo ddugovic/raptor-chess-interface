@@ -830,16 +830,16 @@ public class GameUtils implements GameConstants {
 			// Flashes when time has expired.
 			if (timeLeft < prefs
 					.getLong(PreferenceKeys.BOARD_CLOCK_SHOW_MILLIS_WHEN_LESS_THAN)) {
-				return "  :  . ";
+				return "    :  . "; // TODO: only pad if opponent's time is at least 1 hour
 			} else {
-				return "  :  ";
+				return "    :  "; // TODO: only pad if opponent's time is at least 1 hour
 			}
 		} else if (timeLeft <= 0) {
 			if (timeLeft < prefs
 					.getLong(PreferenceKeys.BOARD_CLOCK_SHOW_MILLIS_WHEN_LESS_THAN)) {
-				return "00:00.0";
+				return "   0:00.0"; // TODO: only pad if opponent's time is at least 1 hour
 			} else {
-				return "00:00";
+				return "   0:00"; // TODO: only pad if opponent's time is at least 1 hour
 			}
 		} else {
 
@@ -849,17 +849,9 @@ public class GameUtils implements GameConstants {
 				timeLeft -= hour * 60000L * 60;
 				int minute = (int) (timeLeft / 60000L);
 				timeLeft -= minute * 60 * 1000;
-
-				if (allowFlash) {
-					return RaptorStringUtils.defaultTimeString(hour, 2)
-							+ (timeMillis / 1000 % 2 == 0 ? ":" : " ") // Adds
-							// the
-							// blinking :
-							+ RaptorStringUtils.defaultTimeString(minute, 2);
-				} else {
-					return RaptorStringUtils.defaultTimeString(hour, 2) + ":"
-							+ RaptorStringUtils.defaultTimeString(minute, 2);
-				}
+				char separator = allowFlash && (timeMillis / 1000 % 2) > 0 ? '.' : ':';
+				return RaptorStringUtils.defaultTimeString(hour, 1) + separator
+						+ RaptorStringUtils.defaultTimeString(minute, 2);
 
 			} else if (timeLeft >= prefs
 					.getLong(PreferenceKeys.BOARD_CLOCK_SHOW_MILLIS_WHEN_LESS_THAN)) {
@@ -868,8 +860,15 @@ public class GameUtils implements GameConstants {
 				int minute = (int) (timeLeft / 60000L);
 				timeLeft -= minute * 60 * 1000;
 				int seconds = (int) (timeLeft / 1000L);
-				return RaptorStringUtils.defaultTimeString(minute, 2) + ":"
-						+ RaptorStringUtils.defaultTimeString(seconds, 2);
+				if (hour == 0) {
+					return "  " // TODO: only pad if opponent's time is at least 1 hour
+							+ RaptorStringUtils.defaultTimeString(minute, 2, ' ') + ':'
+							+ RaptorStringUtils.defaultTimeString(seconds, 2);
+				} else {
+					return RaptorStringUtils.defaultTimeString(hour, 1) + ':'
+							+ RaptorStringUtils.defaultTimeString(minute, 2) + ':'
+							+ RaptorStringUtils.defaultTimeString(seconds, 2);
+				}
 
 			} else {
 				int hour = (int) (timeLeft / (60000L * 60));
@@ -879,9 +878,17 @@ public class GameUtils implements GameConstants {
 				int seconds = (int) (timeLeft / 1000L);
 				timeLeft -= seconds * 1000;
 				int tenths = (int) (timeLeft / 100L);
-				return RaptorStringUtils.defaultTimeString(minute, 2) + ":"
-						+ RaptorStringUtils.defaultTimeString(seconds, 2) + "."
-						+ RaptorStringUtils.defaultTimeString(tenths, 1);
+				if (hour == 0) {
+					return "  " // TODO: only pad if opponent's time is at least 1 hour
+							+ RaptorStringUtils.defaultTimeString(minute, 2) + ':'
+							+ RaptorStringUtils.defaultTimeString(seconds, 2) + '.'
+							+ RaptorStringUtils.defaultTimeString(tenths, 1);
+				} else {
+					return RaptorStringUtils.defaultTimeString(hour, 1) + ':'
+							+ RaptorStringUtils.defaultTimeString(minute, 2) + ':'
+							+ RaptorStringUtils.defaultTimeString(seconds, 2) + '.'
+							+ RaptorStringUtils.defaultTimeString(tenths, 1);
+				}
 			}
 		}
 	}

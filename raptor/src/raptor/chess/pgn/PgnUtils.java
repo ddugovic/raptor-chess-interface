@@ -280,7 +280,7 @@ public class PgnUtils {
 		timeLeft -= seconds * 1000;
 		int millis = (int) timeLeft;
 
-		return RaptorStringUtils.defaultTimeString(hour, 2) + ":"
+		return RaptorStringUtils.defaultTimeString(hour, 1) + ":"
 				+ RaptorStringUtils.defaultTimeString(minute, 2) + ":"
 				+ RaptorStringUtils.defaultTimeString(seconds, 2) + "."
 				+ RaptorStringUtils.defaultTimeString(millis, 1);

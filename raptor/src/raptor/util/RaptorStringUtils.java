@@ -41,24 +41,18 @@ public class RaptorStringUtils {
 	}
 
 	/**
-	 * Expresses value in terms of digits. If value is 0 and digits is 2 "00"
-	 * will be returned. If value is 1 and digits is 2 "01" is returned. If
-	 * value is 123 and digits is 2 then "12" is returned.
+	 * Left-pads value to make it at least "digits" characters long.
+	 * If value is 0 and digits is 2 "00" is returned.
+	 * If value is 1 and digits is 2 "01" is returned.
+	 * If value is 123 and digits is 2 then "123" is returned.
 	 */
 	public static String defaultTimeString(int value, int digits) {
-		String valueAsString = String.valueOf(value);
-        String result = "";
-        if (valueAsString.length() > digits) {
-                for (int i = 0; i < digits; i++) {
-                        result += valueAsString.charAt(i);
-                }
-        } else if (valueAsString.length() < digits) {
-                result = valueAsString;
-                while (result.length() < digits) {
-                        result = "0" + result;
-                }
-        } else {
-                result = valueAsString;
+		return defaultTimeString(value, digits, '0');
+	}
+	public static String defaultTimeString(int value, int digits, char leadingZero) {
+        String result = String.valueOf(value);
+        while (result.length() < digits) {
+            result = leadingZero + result;
         }
         return result;
 
