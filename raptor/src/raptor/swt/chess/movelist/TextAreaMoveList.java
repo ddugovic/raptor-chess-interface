@@ -376,8 +376,10 @@ public class TextAreaMoveList implements ChessBoardMoveList {
 			if (textPanel.getCharCount() == 0) {
 				String sd = textPanel.getLineDelimiter();
 				String title = controller.getGame().getHeader(PgnHeader.White)
-						+ " vs "
-						+ controller.getGame().getHeader(PgnHeader.Black) + sd
+						+ "("+ controller.getGame().getHeader(PgnHeader.WhiteElo)+ ") vs "
+						+ controller.getGame().getHeader(PgnHeader.Black)
+						+ "("+ controller.getGame().getHeader(PgnHeader.BlackElo)+ ")"+ sd
+						+ controller.getGame().getHeader(PgnHeader.Event)+ sd
 						+ sd;
 				textPanel.append(title);
 				StyleRange styleRange = new StyleRange();
